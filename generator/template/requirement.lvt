@@ -1,0 +1,21 @@
+# Standard Requirement Modules
+
+## API
+> place it or add in : config/lv_modules.php
+assign the value into "return"
+
+```
+modules = [
+<<modules>>
+]
+```
+
+## UI
+> place it or add in : ui/src/router/route.js
+assign into "moduleList"
+
+```
+routeUi = [
+<<routeUi>>
+]
+```
