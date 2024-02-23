@@ -717,7 +717,7 @@ Abstract:xxx
 |            |—— globals
 |                |—— ForbiddenPage.vue
 |                |—— UnauthorizePage.vue
-|            |—— lavux
+|            |—— Lavarel
 |                |—— LvActionBox.vue
 |                |—— LvActionItem.vue
 |                |—— LvBanner.vue

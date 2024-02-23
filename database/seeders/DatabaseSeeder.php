@@ -72,11 +72,11 @@ class DatabaseSeeder extends Seeder
 
         }
 
-        // init custom permissions 
+        // init custom permissions
         $customPermissions = [
             [
-                'module' => 'Global', 
-                'permission' => 'settings', 
+                'module' => 'Global',
+                'permission' => 'settings',
             ],
         ];
 
@@ -113,7 +113,7 @@ class DatabaseSeeder extends Seeder
             'username'  => 'admin',
             'email' => 'admin@mail.com',
             'email_verified_at' => now(),
-            'password' => '$2y$10$92IXUNpkjO0rOQ5byMi.Ye4oKoEa3Ro9llC/.og/at2.uheWG/igi', // password
+            'password' => '123', // password
             'role_id' => 1,
             'picture' => 'https://media.licdn.com/dms/image/C5616AQF7fBoQIuvumw/profile-displaybackgroundimage-shrink_200_800/0/1596893586598?e=2147483647&v=beta&t=p-rrXK762DR32CGsBGVUwDNiDWaAiW3IaGOpxsuLWNI',
             ...$logging,
@@ -129,8 +129,8 @@ class DatabaseSeeder extends Seeder
         ];
 
         $notif = Notifications::create([
-            'title' => 'Welcome to Lavux',
-            'content' => "Hello, hope you enjoy using lavux, let's see what lavux have",
+            'title' => 'Bem vindo ao Lavarel',
+            'content' => "Bem vindo ao Lavarel, um painel de administração para Laravel",
             'type' => 'system',
             'category' => null,
             'link_source' => 'frontend',
@@ -170,7 +170,7 @@ class DatabaseSeeder extends Seeder
             'notification_id' => $notif->id,
             ...$logging,
         ]);
- 
+
         $notif = Notifications::create([
             'title' => 'Permintaan Tambahan',
             'content' => "halo ini adalah direct message dari admin, coba lihat LDBX deh",

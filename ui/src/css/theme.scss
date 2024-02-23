@@ -1,19 +1,15 @@
-
 // Reset & Normalizer
 $soft-color: #f9fbfc;
 $bg-color: #f1f5f9;
 $border-color: rgb(226 232 240 / 1);
 
-
-
 .theme-1 {
-  
   /* Sidemenus / Sidenav */
   // Layouting
   aside {
-
-    .side-menu { /* bg menu */
-      box-shadow: 0 0 28px 0 rgba(82,63,105, 0.02);
+    .side-menu {
+      /* bg menu */
+      box-shadow: 0 0 28px 0 rgba(82, 63, 105, 0.02);
     }
 
     .side-menu-wrapper {
@@ -25,13 +21,13 @@ $border-color: rgb(226 232 240 / 1);
       padding: 2px;
       border-radius: 5px;
 
-      .q-item__section--side { // icon
+      .q-item__section--side {
+        // icon
         min-width: 20px !important;
-        padding-left:8px;
-
+        padding-left: 8px;
 
         .q-icon {
-          font-size:1.3em !important;
+          font-size: 1.3em !important;
         }
 
         .q-item__label--caption {
@@ -39,7 +35,8 @@ $border-color: rgb(226 232 240 / 1);
         }
       }
 
-      .q-item__section--main { // label
+      .q-item__section--main {
+        // label
         font-weight: 500;
         font-size: 13px;
       }
@@ -47,7 +44,6 @@ $border-color: rgb(226 232 240 / 1);
 
     // Sub
     .sub-menu {
-
       .side-menu-wrapper {
         padding: 0px 14px;
       }
@@ -56,10 +52,12 @@ $border-color: rgb(226 232 240 / 1);
         border-radius: 0;
         padding: 8px 2px;
 
-        .q-item__section--side { // icon
+        .q-item__section--side {
+          // icon
           padding-left: 12px;
         }
-        .q-item__section--main { // label
+        .q-item__section--main {
+          // label
           opacity: 0.8;
           font-size: 0.96em;
         }
@@ -67,21 +65,23 @@ $border-color: rgb(226 232 240 / 1);
     }
 
     .menu-active {
-      .q-item__section--side, .q-item__section {
+      .q-item__section--side,
+      .q-item__section {
         font-weight: 700;
-      }    
+      }
     }
-
   }
 
   // coloring (default)
   aside {
-    .side-menu { /* bg menu */
+    .side-menu {
+      /* bg menu */
       background: #fff;
       border-right: 1px solid $border-color;
     }
 
-    .side-menu .head-menu { /* bg head menu */
+    .side-menu .head-menu {
+      /* bg head menu */
       border-bottom: 1px dashed rgba(204, 204, 204, 0.7);
     }
 
@@ -101,7 +101,8 @@ $border-color: rgb(226 232 240 / 1);
       }
       .menu-active {
         background: transparent;
-        .q-item__section--side, .q-item__section {
+        .q-item__section--side,
+        .q-item__section {
           color: $primary;
         }
       }
@@ -109,16 +110,18 @@ $border-color: rgb(226 232 240 / 1);
 
     .menu-active {
       background-color: rgba(228, 225, 225, 0.3);
-      .q-item__section--side, .q-item__section {
+      .q-item__section--side,
+      .q-item__section {
         color: $primary;
-      }    
+      }
     }
-    
+
     .app-name {
       color: #7e7e7e;
     }
 
-    .apiroot-label, .disable-mini {
+    .apiroot-label,
+    .disable-mini {
       color: $primary;
       background: $bg-color;
     }
@@ -130,7 +133,8 @@ $border-color: rgb(226 232 240 / 1);
 
   // coloring (primary)
   aside {
-    .side-menu.primary { /* bg menu */
+    .side-menu.primary {
+      /* bg menu */
       color: #fff;
       background: $primary;
       border-right: 0;
@@ -142,7 +146,8 @@ $border-color: rgb(226 232 240 / 1);
         }
         .menu-active {
           border-left: 4px solid #fff !important;
-          .q-item__section--side, .q-item__section {
+          .q-item__section--side,
+          .q-item__section {
             color: #fff !important;
             opacity: 1;
           }
@@ -151,16 +156,16 @@ $border-color: rgb(226 232 240 / 1);
 
       .side-menu-item:hover {
         color: #fff;
-        border-color:transparent !important;
+        border-color: transparent !important;
         .q-item__section {
           opacity: 0.5;
         }
       }
-  
+
       .side-menu-item .q-item__label--caption {
         color: #fff;
       }
-  
+
       .app-name {
         color: #ececec;
       }
@@ -168,11 +173,12 @@ $border-color: rgb(226 232 240 / 1);
 
     .menu-active {
       background: rgba(231, 231, 231, 0.9);
-      .q-item__section--side, .q-item__section, .q-item__label--caption {
+      .q-item__section--side,
+      .q-item__section,
+      .q-item__label--caption {
         color: $primary !important;
       }
     }
-
   }
 
   .logo {
@@ -208,7 +214,6 @@ $border-color: rgb(226 232 240 / 1);
     .top-menu-list:hover {
       background: rgba(204, 204, 204, 0.2);
     }
-
   }
 
   .top-menu-content {
@@ -221,12 +226,10 @@ $border-color: rgb(226 232 240 / 1);
     tbody {
       background: #fff;
     }
-    .q-table__middle, .q-table__bottom {
+    .q-table__middle,
+    .q-table__bottom {
       border: 0;
       background: $bg-color;
     }
   }
-
- 
-
 }

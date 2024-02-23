@@ -3,9 +3,9 @@
 </template>
 
 <script>
-import { defineComponent } from 'vue'
+import { defineComponent } from "vue";
 
 export default defineComponent({
-  name: 'Error403'
-})
+  name: "Error403",
+});
 </script>

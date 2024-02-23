@@ -1,6 +1,6 @@
-# LavuxUI (lavux-ui)
+# Lavarel (Lavarel-ui)
 
-Frontend App for Lavux
+Frontend App for Lavarel
 
 ## Install the dependencies
 

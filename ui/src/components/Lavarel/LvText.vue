@@ -3,20 +3,16 @@
 </template>
 
 <script>
-
-import { ref, computed, useSlots, defineComponent } from 'vue'
+import { ref, computed, useSlots, defineComponent } from "vue";
 export default defineComponent({
-  name: 'LvText',
+  name: "LvText",
   props: {
-    data: {}
+    data: {},
   },
   setup(props) {
-    
-    return {
-      
-    }
-  }
-})
+    return {};
+  },
+});
 </script>
 <style>
 .text {

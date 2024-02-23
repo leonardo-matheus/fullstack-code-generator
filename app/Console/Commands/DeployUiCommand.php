@@ -12,7 +12,7 @@ class DeployUiCommand extends Command
      *
      * @var string
      */
-    protected $signature = 'lavux-deploy';
+    protected $signature = 'Lavarel-deploy';
 
     /**
      * The console command description.
@@ -99,7 +99,7 @@ class DeployUiCommand extends Command
             }
 
             $routes = json_decode(File::get($uiRoutePath));
-        
+
             $phpArrayString = '<?php' . PHP_EOL . PHP_EOL;
             $phpArrayString .= "/*". PHP_EOL;
             $phpArrayString .= "|--------------------------------------------------------------------------". PHP_EOL;
@@ -111,7 +111,7 @@ class DeployUiCommand extends Command
             $phpArrayString .= "|Generate the ui route in frontend by accesing url '/generator', follow the point '2' of Deploy Apps". PHP_EOL;
             $phpArrayString .= "|". PHP_EOL;
             $phpArrayString .= "*/". PHP_EOL;
-            
+
             $phpArrayString .= 'return [' . PHP_EOL;
             foreach ($routes as $item) {
                 $phpArrayString .= "    [" . PHP_EOL;

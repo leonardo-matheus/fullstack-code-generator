@@ -11,12 +11,12 @@ class ApplicationSettings
         [ // default value, will overide by : config('lv_settings', [])
             "name" => "company",
             "comment" => "Configuration default of your company information",
-            "list" => [ 
+            "list" => [
                 "name" => "PT Solusi Pembantu Usaha",
                 "tag_line" => "Component library for Enterprise system",
                 "phone" => "012 345 6789",
-                "web" => "http://lavux.sopeus.com",
-                "email" => "lavux@sopeus.com",
+                "web" => "http://Lavarel.sopeus.com",
+                "email" => "Lavarel@sopeus.com",
                 "logo" => null, // url logo
             ],
         ],
@@ -36,7 +36,7 @@ class ApplicationSettings
     public function store ($type, $module, $config, $value) {
         try {
 
-        
+
             $input = [
                 "type" => $type,
                 "slug" => $this->slugNameSetting,
@@ -190,7 +190,7 @@ class ApplicationSettings
                 foreach ($set['list'] as $name => $value) {
                     $fromDb = $this->getValue($db_settings, $name, $set['name']);
                     $value = $fromDb->has ? $fromDb->value : $value;
-                    
+
                     // handle not init
                     if (!$fromDb->has) {
                         $fromDb = $this->formatDefault($value);
@@ -225,7 +225,7 @@ class ApplicationSettings
                 $data = $this->store(getType($value), $module, $config, $value);
             }
 
-            
+
             return $data;
         } catch (Exception $e){
             throw new Exception(H_throw($e, '[ApplicationSettings::update] '));
@@ -239,7 +239,7 @@ class ApplicationSettings
             if ($configuration) {
                 $checkModule = H_findArrayByKey($this->configurationList, 'name', $module);
                 if (!$checkModule) throw new Exception("Modul Setting for '$module' not defined");
-                
+
                 $checkConfig = $checkModule['list'];
                 if (isset($checkConfig[$configuration])) {
                     $res = $this->get($module, $configuration, true);

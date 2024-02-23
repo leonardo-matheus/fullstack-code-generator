@@ -21,10 +21,7 @@ module.exports = configure(function (ctx) {
     // app boot file (/src/boot)
     // --> boot files are part of "main.js"
     // https://quasar.dev/quasar-cli/boot-files
-    boot: [
-      "axios",
-      "extends",
-    ],
+    boot: ["axios", "extends"],
 
     // https://quasar.dev/quasar-cli/quasar-conf-js#Property%3A-css
     css: ["app.scss"],
@@ -36,7 +33,7 @@ module.exports = configure(function (ctx) {
       // 'fontawesome-v5',
       // 'eva-icons',
       // 'themify',
-      'line-awesome',
+      "line-awesome",
       // 'roboto-font-latin-ext', // this or either 'roboto-font', NEVER both!
 
       "roboto-font", // optional, you are not bound to it
@@ -94,35 +91,25 @@ module.exports = configure(function (ctx) {
       // you can manually specify Quasar components/directives to be available everywhere:
       //
       // components: [],
-      directives: [
-        'Ripple',
-        'ClosePopup',
-        'TouchHold'
-      ],
+      directives: ["Ripple", "ClosePopup", "TouchHold"],
 
       // Quasar plugins
       plugins: [
-        'Meta',
-        'BottomSheet',
-        'Dialog',
-        'Notify',
-        'LocalStorage',
-        'Loading',
-        'LoadingBar',
-        'AddressbarColor',
-        'SessionStorage'
-      ]
+        "Meta",
+        "BottomSheet",
+        "Dialog",
+        "Notify",
+        "LocalStorage",
+        "Loading",
+        "LoadingBar",
+        "AddressbarColor",
+        "SessionStorage",
+      ],
     },
 
     // animations: 'all', // --- includes all animations
     // https://quasar.dev/options/animations
-    animations: [
-      "fadeIn",
-      "fadeOut",
-      "zoomIn",
-      "zoomOut",
-      "pulse",
-    ],
+    animations: ["fadeIn", "fadeOut", "zoomIn", "zoomOut", "pulse"],
 
     // https://quasar.dev/quasar-cli/developing-ssr/configuring-ssr
     ssr: {
@@ -163,9 +150,9 @@ module.exports = configure(function (ctx) {
       },
 
       manifest: {
-        name: `LavuxUI`,
-        short_name: `LavuxUI`,
-        description: `Frontend App for Lavux`,
+        name: `Lavarel`,
+        short_name: `Lavarel`,
+        description: `Frontend App for Lavarel`,
         display: "standalone",
         orientation: "portrait",
         background_color: "#ffffff",
@@ -228,7 +215,7 @@ module.exports = configure(function (ctx) {
       builder: {
         // https://www.electron.build/configuration/configuration
 
-        appId: "lavux-ui",
+        appId: "Lavarel-ui",
       },
 
       // "chain" is a webpack-chain object https://github.com/neutrinojs/webpack-chain

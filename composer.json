@@ -1,8 +1,8 @@
 {
     "name": "laravel/laravel",
     "type": "project",
-    "description": "Lavux starter pack using Laravel & Vue.",
-    "keywords": ["framework", "laravel", "vue", "quasar", "lavux"],
+    "description": "Lavarel starter pack using Laravel & Vue.",
+    "keywords": ["framework", "laravel", "vue", "quasar", "Lavarel"],
     "license": "MIT",
     "require": {
         "php": "^8.1",

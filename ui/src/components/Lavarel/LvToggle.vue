@@ -1,14 +1,22 @@
-<template >
+<template>
   <div :class="`lv-field col-${col}`">
-    <div v-if="topLabel || $slots.topLabel" class="top-label" >
-      <template v-if="$slots.topLabel"> <slot name="topLabel"></slot> </template>
-      <template v-else> {{(label) ? label : ''}} </template>
+    <div v-if="topLabel || $slots.topLabel" class="top-label">
+      <template v-if="$slots.topLabel">
+        <slot name="topLabel"></slot>
+      </template>
+      <template v-else> {{ label ? label : "" }} </template>
     </div>
-    <q-field :outlined="outlined" :borderless="borderless" dense
-     :class="elClass" :readonly="isReadOnly"
+    <q-field
+      :outlined="outlined"
+      :borderless="borderless"
+      dense
+      :class="elClass"
+      :readonly="isReadOnly"
     >
-      <template v-slot:control="{ emitValue}">
-        <q-toggle floating dense
+      <template v-slot:control="{ emitValue }">
+        <q-toggle
+          floating
+          dense
           :size="size"
           :icon="icon"
           :unchecked-icon="uncheckedIcon"
@@ -21,7 +29,7 @@
           emit-value
           v-model="inputValue"
           :readonly="readonly"
-          @update:model-value="val => emitters(val, emitValue)"
+          @update:model-value="(val) => emitters(val, emitValue)"
         >
           <span v-if="!topLabel" v-html="label"></span>
           <slot></slot>
@@ -32,13 +40,20 @@
 </template>
 
 <script>
-import { ref, watch, watchEffect, onBeforeMount, computed, defineComponent } from 'vue'
+import {
+  ref,
+  watch,
+  watchEffect,
+  onBeforeMount,
+  computed,
+  defineComponent,
+} from "vue";
 export default defineComponent({
-  name: 'LvToggle',
+  name: "LvToggle",
   props: {
     modelValue: {
       type: [String, Boolean],
-      default: '',
+      default: "",
     },
     emit: {
       type: Function,
@@ -50,11 +65,11 @@ export default defineComponent({
     },
     size: {
       type: String,
-      default: 'md',
+      default: "md",
     },
     color: {
       type: String,
-      default: 'primary',
+      default: "primary",
     },
     icon: {
       type: String,
@@ -94,62 +109,63 @@ export default defineComponent({
     },
     col: {
       type: String,
-      default: '12',
+      default: "12",
     },
   },
-  setup (props, { emit }) {
-    const inputValue = ref(props.modelValue)
+  setup(props, { emit }) {
+    const inputValue = ref(props.modelValue);
 
-    onBeforeMount(()=> {
-      if (props.modelValue) inputValue.value = props.modelValue
-    })
+    onBeforeMount(() => {
+      if (props.modelValue) inputValue.value = props.modelValue;
+    });
 
-    watchEffect(() => { // handle reactive for declared element
-      inputValue.value = props.modelValue
-    })
+    watchEffect(() => {
+      // handle reactive for declared element
+      inputValue.value = props.modelValue;
+    });
 
     const outlined = computed(() => {
-      let res = true
-      if (props.flat) res = !res
-      return res
-    })
+      let res = true;
+      if (props.flat) res = !res;
+      return res;
+    });
 
     const borderless = computed(() => {
-      let res = false
-      if (props.flat) res = !res
-      return res
-    })
+      let res = false;
+      if (props.flat) res = !res;
+      return res;
+    });
 
     const useInnerLabel = computed(() => {
-      let res = (props.label) ? true : false
-      if (props.topLabel) res = false
-      return res
-    })
+      let res = props.label ? true : false;
+      if (props.topLabel) res = false;
+      return res;
+    });
 
     const isReadOnly = computed(() => {
-      let res = false
-      if (props.readonly) res = (props.readonly) ? true : props.readonly
-      return res
-    })
+      let res = false;
+      if (props.readonly) res = props.readonly ? true : props.readonly;
+      return res;
+    });
 
     const elClass = computed(() => {
-      let res = `lv-toggle`
-      if (isReadOnly.value) res = `${res} lv-field_readonly`
-      return res
-    })
+      let res = `lv-toggle`;
+      if (isReadOnly.value) res = `${res} lv-field_readonly`;
+      return res;
+    });
 
     const mainClass = computed(() => {
-      let res = (props.block) ? 'lv-toggle_block' : 'lv-toggle_vertical'
-      if (props.leftLabel) res = `${res} lv-toggle_left`
-      return res
-    })
+      let res = props.block ? "lv-toggle_block" : "lv-toggle_vertical";
+      if (props.leftLabel) res = `${res} lv-toggle_left`;
+      return res;
+    });
 
-    function emitters (val, emitValueEvt) {
-      emit('update:modelValue', inputValue.value)
-      emit('input', inputValue.value)
-      emitValueEvt(val)
+    function emitters(val, emitValueEvt) {
+      emit("update:modelValue", inputValue.value);
+      emit("input", inputValue.value);
+      emitValueEvt(val);
     }
- 
+
     return {
       inputValue,
       // computed
@@ -161,7 +177,7 @@ export default defineComponent({
       mainClass,
       //methods
       emitters,
-    }
-  }
-})
+    };
+  },
+});
 </script>

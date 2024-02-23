@@ -12,7 +12,7 @@ class GeneratorCommand extends Command
      *
      * @var string
      */
-    protected $signature = 'lavux-generate {--scope= : The scope of the generated file} {--s= : The scope of the generated file}';
+    protected $signature = 'Lavarel-generate {--scope= : The scope of the generated file} {--s= : The scope of the generated file}';
 
     /**
      * The console command description.

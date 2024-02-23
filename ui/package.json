@@ -1,9 +1,9 @@
 {
-  "name": "lavux-ui",
+  "name": "Lavarel-ui",
   "version": "0.0.1",
-  "description": "Frontend App for Lavux",
-  "productName": "LavuxUI",
-  "author": "ikhbalfuady <ikhbalfuady@gmail.com>",
+  "description": "Frontend App for Lavarel",
+  "productName": "Lavarel",
+  "author": "leonardo m. <d3f4ult02@gmail.com>",
   "private": true,
   "scripts": {
     "lint": "eslint --ext .js,.vue ./",
@@ -13,6 +13,7 @@
   "dependencies": {
     "@quasar/extras": "^1.0.0",
     "axios": "^0.21.1",
+    "caniuse-lite": "^1.0.30001589",
     "core-js": "^3.6.5",
     "pinia": "^2.0.32",
     "quasar": "^2.0.0",

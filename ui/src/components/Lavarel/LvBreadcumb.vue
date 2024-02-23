@@ -1,31 +1,32 @@
 <template>
   <div class="breadcumb">
-    <span class="page-title animated zoomIn" v-html="title"></span> 
+    <span class="page-title animated zoomIn" v-html="title"></span>
     <q-icon class="separator-icon" name="keyboard_double_arrow_right" />
-    <span class="page-subtitle animated zoomIn text-capitalize" v-html="subtitle"></span>
+    <span
+      class="page-subtitle animated zoomIn text-capitalize"
+      v-html="subtitle"
+    ></span>
   </div>
 </template>
 
 <script>
-import { ref, computed, defineComponent } from 'vue'
+import { ref, computed, defineComponent } from "vue";
 export default defineComponent({
-  name: 'LvBreadcumb',
+  name: "LvBreadcumb",
   props: {
     title: {
       type: String,
-      default: ''
+      default: "",
     },
     subtitle: {
       type: [String, Number, Boolean],
-      default: null
+      default: null,
     },
   },
   setup(props) {
-    
-    return {
-    }
-  }
-})
+    return {};
+  },
+});
 </script>
 <style lang="scss">
 .breadcumb {
