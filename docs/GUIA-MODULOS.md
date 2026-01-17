@@ -1,10 +1,41 @@
+<p align="center">
+  <img src="assets/logo.png" alt="Lavarel" width="300">
+</p>
+
 # Guia: Criando Módulos no Lavarel
 
-Este guia ensina como criar um módulo CRUD completo (backend + frontend) em poucos minutos.
+## O que é o Lavarel?
 
-## Conceito
+O Lavarel é uma **aplicação fullstack completa** (backend Laravel + frontend Vue/Quasar) que funciona como **gerador de código**. 
 
-Um **módulo** no Lavarel representa uma entidade do sistema (ex: Produtos, Clientes, Pedidos). Ao criar um módulo, o gerador cria automaticamente:
+Você usa o Lavarel para criar novos módulos, e ele gera automaticamente todo o código necessário — tanto no backend quanto no frontend.
+
+```
+┌─────────────────────────────────────────────────────────┐
+│                       LAVAREL                           │
+├────────────────────────┬────────────────────────────────┤
+│   Frontend (Vue)       │      Backend (Laravel)         │
+│   • Interface admin    │      • API REST                │
+│   • Telas CRUD         │      • Autenticação            │
+│   • UI Kit             │      • Permissões RBAC         │
+├────────────────────────┴────────────────────────────────┤
+│                      GERADOR                            │
+│        JSON de definição → Código fullstack             │
+└─────────────────────────────────────────────────────────┘
+```
+
+**Dois papéis:**
+
+1. **Aplicação funcional** — Sistema de admin pronto com login, permissões, notificações
+2. **Ferramenta geradora** — Cria módulos automaticamente a partir de JSON
+
+---
+
+## Conceito de Módulo
+
+Um **módulo** representa uma entidade do sistema (ex: Produtos, Clientes, Pedidos). 
+
+Quando você define um módulo em JSON e executa o gerador, o Lavarel cria automaticamente:
 
 | Backend (Laravel) | Frontend (Vue/Quasar) |
 |-------------------|----------------------|

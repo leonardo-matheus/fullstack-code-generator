@@ -1,6 +1,20 @@
-# Lavarel
+<p align="center">
+  <img src="docs/assets/logo.png" alt="Lavarel" width="400">
+</p>
 
-Gerador fullstack de módulos CRUD. Define um JSON → gera backend Laravel + frontend Vue/Quasar automaticamente.
+<p align="center">
+  <strong>Gerador fullstack de módulos CRUD</strong><br>
+  Define um JSON → gera backend Laravel + frontend Vue/Quasar automaticamente
+</p>
+
+<p align="center">
+  <img src="https://img.shields.io/badge/Laravel-10.x-red?logo=laravel" alt="Laravel">
+  <img src="https://img.shields.io/badge/Vue-3.x-green?logo=vue.js" alt="Vue">
+  <img src="https://img.shields.io/badge/Quasar-2.x-blue?logo=quasar" alt="Quasar">
+  <img src="https://img.shields.io/badge/License-MIT-yellow" alt="License">
+</p>
+
+---
 
 ## Quick Start
 
