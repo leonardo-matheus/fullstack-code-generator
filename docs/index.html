@@ -657,9 +657,171 @@
       font-size: 0.65rem;
     }
     
+    .video-wrapper {
+      cursor: pointer;
+      position: relative;
+    }
+    
+    .video-play-overlay {
+      position: absolute;
+      inset: 0;
+      top: 52px; /* Altura do header */
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      background: rgba(0, 0, 0, 0.3);
+      opacity: 0;
+      transition: opacity 0.3s;
+      z-index: 3;
+    }
+    
+    .video-wrapper:hover .video-play-overlay {
+      opacity: 1;
+    }
+    
+    .play-icon {
+      width: 80px;
+      height: 80px;
+      background: var(--gradient-1);
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      box-shadow: 0 10px 40px rgba(99, 102, 241, 0.5);
+      transition: transform 0.3s, box-shadow 0.3s;
+    }
+    
+    .play-icon::after {
+      content: '';
+      border-style: solid;
+      border-width: 15px 0 15px 25px;
+      border-color: transparent transparent transparent white;
+      margin-left: 5px;
+    }
+    
+    .video-wrapper:hover .play-icon {
+      transform: scale(1.1);
+      box-shadow: 0 15px 50px rgba(99, 102, 241, 0.6);
+    }
+    
+    /* Video Modal */
+    .video-modal {
+      position: fixed;
+      inset: 0;
+      z-index: 9999;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 20px;
+      opacity: 0;
+      visibility: hidden;
+      transition: all 0.3s ease;
+    }
+    
+    .video-modal.active {
+      opacity: 1;
+      visibility: visible;
+    }
+    
+    .video-modal-backdrop {
+      position: absolute;
+      inset: 0;
+      background: rgba(0, 0, 0, 0.9);
+      backdrop-filter: blur(10px);
+    }
+    
+    .video-modal-content {
+      position: relative;
+      width: 100%;
+      max-width: 1400px;
+      z-index: 1;
+      transform: scale(0.9);
+      transition: transform 0.3s ease;
+    }
+    
+    .video-modal.active .video-modal-content {
+      transform: scale(1);
+    }
+    
+    .video-modal-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 16px 20px;
+      background: var(--dark-card);
+      border-radius: 16px 16px 0 0;
+      border: 1px solid var(--border);
+      border-bottom: none;
+    }
+    
+    .video-modal-header-left {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+    
+    .video-modal-close {
+      width: 36px;
+      height: 36px;
+      background: rgba(255, 255, 255, 0.1);
+      border: none;
+      border-radius: 50%;
+      color: var(--text);
+      font-size: 1.5rem;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      transition: all 0.3s;
+    }
+    
+    .video-modal-close:hover {
+      background: rgba(255, 255, 255, 0.2);
+      transform: rotate(90deg);
+    }
+    
+    .video-modal-video {
+      width: 100%;
+      aspect-ratio: 1674 / 720;
+      border-radius: 0 0 16px 16px;
+      border: 1px solid var(--border);
+      border-top: none;
+      display: block;
+      background: #000;
+    }
+    
     @media (max-width: 768px) {
       .video-section {
         padding: 48px 0;
+      }
+      
+      .play-icon {
+        width: 60px;
+        height: 60px;
+      }
+      
+      .play-icon::after {
+        border-width: 10px 0 10px 18px;
+        margin-left: 3px;
+      }
+      
+      .video-modal {
+        padding: 10px;
+      }
+      
+      .video-modal-header {
+        padding: 12px 16px;
+        border-radius: 12px 12px 0 0;
+      }
+      
+      .video-modal-video {
+        border-radius: 0 0 12px 12px;
+      }
+      
+      .video-modal-close {
+        width: 32px;
+        height: 32px;
+        font-size: 1.25rem;
       }
       
       .video-wrapper {
@@ -962,7 +1124,7 @@
           <li><a href="#demo">Demo</a></li>
           <li><a href="#stack">Stack</a></li>
           <li><a href="#components">Componentes</a></li>
-          <li><a href="#how-it-works">Como Funciona</a></li>
+          <li><a href="documentation.html">📖 Docs</a></li>
         </ul>
         
         <div class="nav-cta">
@@ -1119,15 +1281,19 @@
         </p>
       </div>
       
-      <div class="video-wrapper">
+      <div class="video-wrapper" id="videoTrigger" onclick="openVideoModal()">
         <div class="video-header">
           <div class="video-dot red"></div>
           <div class="video-dot yellow"></div>
           <div class="video-dot green"></div>
           <span class="video-title">LvCard.vue — Lavarel Component</span>
         </div>
-        <div class="video-badge">16 segundos</div>
+        <div class="video-badge">👆 Clique para ampliar</div>
+        <div class="video-play-overlay">
+          <div class="play-icon"></div>
+        </div>
         <video 
+          id="previewVideo"
           autoplay 
           loop 
           muted 
@@ -1391,6 +1557,31 @@
     </div>
   </footer>
   
+  <!-- Video Modal -->
+  <div class="video-modal" id="videoModal">
+    <div class="video-modal-backdrop" onclick="closeVideoModal()"></div>
+    <div class="video-modal-content">
+      <div class="video-modal-header">
+        <div class="video-modal-header-left">
+          <div class="video-dot red"></div>
+          <div class="video-dot yellow"></div>
+          <div class="video-dot green"></div>
+          <span class="video-title">LvCard.vue — Lavarel Component</span>
+        </div>
+        <button class="video-modal-close" onclick="closeVideoModal()">×</button>
+      </div>
+      <video 
+        class="video-modal-video"
+        id="modalVideo"
+        controls
+        playsinline
+      >
+        <source src="assets/video_lvCard.mp4" type="video/mp4">
+        Seu navegador não suporta vídeo HTML5.
+      </video>
+    </div>
+  </div>
+  
   <script>
     // Navbar scroll effect
     const navbar = document.getElementById('navbar');
@@ -1436,6 +1627,33 @@
       el.style.transform = 'translateY(20px)';
       el.style.transition = 'all 0.6s ease';
       observer.observe(el);
+    });
+    
+    // Video Modal
+    const videoModal = document.getElementById('videoModal');
+    const modalVideo = document.getElementById('modalVideo');
+    const previewVideo = document.getElementById('previewVideo');
+    
+    function openVideoModal() {
+      videoModal.classList.add('active');
+      document.body.style.overflow = 'hidden';
+      previewVideo.pause();
+      modalVideo.currentTime = 0;
+      modalVideo.play();
+    }
+    
+    function closeVideoModal() {
+      videoModal.classList.remove('active');
+      document.body.style.overflow = '';
+      modalVideo.pause();
+      previewVideo.play();
+    }
+    
+    // Fechar modal com ESC
+    document.addEventListener('keydown', (e) => {
+      if (e.key === 'Escape' && videoModal.classList.contains('active')) {
+        closeVideoModal();
+      }
     });
   </script>
 </body>
