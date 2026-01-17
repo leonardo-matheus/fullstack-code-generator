@@ -573,6 +573,108 @@
       font-family: 'JetBrains Mono', monospace;
     }
     
+    /* Video Section */
+    .video-section {
+      padding: 80px 0;
+      background: var(--dark-lighter);
+    }
+    
+    .video-wrapper {
+      position: relative;
+      max-width: 1000px;
+      margin: 0 auto;
+      border-radius: 20px;
+      overflow: hidden;
+      box-shadow: 0 25px 80px rgba(0, 0, 0, 0.5);
+      border: 1px solid var(--border);
+    }
+    
+    .video-wrapper::before {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background: var(--gradient-1);
+      opacity: 0;
+      transition: opacity 0.3s;
+      pointer-events: none;
+      z-index: 1;
+    }
+    
+    .video-wrapper:hover::before {
+      opacity: 0.05;
+    }
+    
+    .video-wrapper video {
+      width: 100%;
+      height: auto;
+      display: block;
+    }
+    
+    .video-header {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      padding: 16px 20px;
+      background: var(--dark-card);
+      border-bottom: 1px solid var(--border);
+    }
+    
+    .video-dot {
+      width: 12px;
+      height: 12px;
+      border-radius: 50%;
+    }
+    
+    .video-dot.red { background: #f87171; }
+    .video-dot.yellow { background: #fbbf24; }
+    .video-dot.green { background: #34d399; }
+    
+    .video-title {
+      margin-left: 12px;
+      font-size: 0.875rem;
+      color: var(--text-muted);
+      font-family: 'JetBrains Mono', monospace;
+    }
+    
+    .video-badge {
+      position: absolute;
+      top: 70px;
+      right: 20px;
+      background: var(--gradient-1);
+      color: white;
+      padding: 8px 16px;
+      border-radius: 100px;
+      font-size: 0.75rem;
+      font-weight: 600;
+      z-index: 2;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+    
+    .video-badge::before {
+      content: '▶';
+      font-size: 0.65rem;
+    }
+    
+    @media (max-width: 768px) {
+      .video-section {
+        padding: 48px 0;
+      }
+      
+      .video-wrapper {
+        border-radius: 12px;
+        margin: 0 16px;
+      }
+      
+      .video-badge {
+        top: 60px;
+        right: 12px;
+        padding: 6px 12px;
+        font-size: 0.7rem;
+      }
+    }
+    
     /* How it Works */
     .steps {
       display: grid;
@@ -857,6 +959,7 @@
         
         <ul class="nav-links">
           <li><a href="#features">Features</a></li>
+          <li><a href="#demo">Demo</a></li>
           <li><a href="#stack">Stack</a></li>
           <li><a href="#components">Componentes</a></li>
           <li><a href="#how-it-works">Como Funciona</a></li>
@@ -1005,8 +1108,41 @@
     </div>
   </section>
   
+  <!-- Video Demo Section -->
+  <section class="video-section" id="demo">
+    <div class="container">
+      <div class="section-header">
+        <div class="section-badge">Demo</div>
+        <h2 class="section-title">Veja em Ação</h2>
+        <p class="section-description">
+          Criando o componente LvCard do zero
+        </p>
+      </div>
+      
+      <div class="video-wrapper">
+        <div class="video-header">
+          <div class="video-dot red"></div>
+          <div class="video-dot yellow"></div>
+          <div class="video-dot green"></div>
+          <span class="video-title">LvCard.vue — Lavarel Component</span>
+        </div>
+        <div class="video-badge">16 segundos</div>
+        <video 
+          autoplay 
+          loop 
+          muted 
+          playsinline
+          poster="assets/video-poster.jpg"
+        >
+          <source src="assets/video_lvCard.mp4" type="video/mp4">
+          Seu navegador não suporta vídeo HTML5.
+        </video>
+      </div>
+    </div>
+  </section>
+  
   <!-- Stack Section -->
-  <section class="section" id="stack" style="background: var(--dark-lighter);">
+  <section class="section" id="stack">
     <div class="container">
       <div class="section-header">
         <div class="section-badge">Tech Stack</div>
