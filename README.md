@@ -2,21 +2,43 @@
   <img src="docs/assets/logo.png" alt="Lavarel" width="400">
 </p>
 
+<h1 align="center">🚀 Lavarel Fullstack Generator</h1>
+
 <p align="center">
-  <strong>Gerador fullstack de módulos CRUD</strong><br>
-  Define um JSON → gera backend Laravel + frontend Vue/Quasar automaticamente
+  <strong>Framework completo para criar aplicações Laravel + Vue 3</strong><br>
+  Gere módulos CRUD completos com um comando. Backend + Frontend integrados automaticamente.
 </p>
 
 <p align="center">
-  <img src="https://img.shields.io/badge/Laravel-10.x-red?logo=laravel" alt="Laravel">
-  <img src="https://img.shields.io/badge/Vue-3.x-green?logo=vue.js" alt="Vue">
-  <img src="https://img.shields.io/badge/Quasar-2.x-blue?logo=quasar" alt="Quasar">
-  <img src="https://img.shields.io/badge/License-MIT-yellow" alt="License">
+  <img src="https://img.shields.io/badge/Laravel-10.x-FF2D20?style=for-the-badge&logo=laravel&logoColor=white" alt="Laravel">
+  <img src="https://img.shields.io/badge/Vue-3.x-4FC08D?style=for-the-badge&logo=vue.js&logoColor=white" alt="Vue">
+  <img src="https://img.shields.io/badge/Quasar-2.x-1976D2?style=for-the-badge&logo=quasar&logoColor=white" alt="Quasar">
+  <img src="https://img.shields.io/badge/Naive_UI-2.x-18A058?style=for-the-badge" alt="Naive UI">
+  <img src="https://img.shields.io/badge/License-MIT-yellow?style=for-the-badge" alt="License">
+</p>
+
+<p align="center">
+  <a href="https://leonardo-matheus.github.io/Lavarel-Fullstack-Generator/">📖 Documentação</a> •
+  <a href="#-features">Features</a> •
+  <a href="#-quick-start">Quick Start</a> •
+  <a href="#-componentes">Componentes</a>
 </p>
 
 ---
 
-## Quick Start
+## ✨ Features
+
+- 🔧 **Gerador de Módulos** - Crie CRUD completo com um comando
+- 🎨 **20+ Componentes** - Biblioteca completa com Naive UI
+- 🌙 **Dark Mode** - Suporte nativo a tema escuro
+- 🔐 **Autenticação** - Laravel Sanctum com roles e permissões
+- 📱 **100% Responsivo** - Mobile-first design
+- 💳 **Credit Card** - Componente com detecção de bandeira e banco
+- 📊 **Formatação BR** - CPF, CNPJ, telefone, moeda automático
+
+---
+
+## 🚀 Quick Start
 
 ```bash
 # Backend
@@ -147,34 +169,57 @@ GET /api/me/permissions        Permissões
 GET /api/me/notifications      Notificações
 ```
 
-## Componentes UI (Lavarel Kit)
+## 🎨 Componentes UI (Lavarel Kit)
 
 | Componente | Descrição |
 |------------|-----------|
+| `LvInput` | Input com validação, modos: text, number, currency, date |
+| `LvSelect` | Select com busca, múltipla seleção e ajax |
+| `LvBtn` | Botão com variantes: soft, flat, outlined, loading |
 | `LvTable` | Tabela com paginação, busca, ordenação |
-| `LvInput` | Input com validação integrada |
-| `LvSelect` | Select com busca |
-| `LvBtn` | Botão padronizado |
-| `LvUploader` | Upload de arquivos |
-| `LvContainer` | Wrapper de página |
-| `LvHeaderPage` | Título + breadcrumb + ações |
-| `LvDisplayer` | Exibição de dados readonly |
+| `LvCard` | Card com header, footer e slots |
+| `LvModal` | Modal com header, conteúdo e footer |
+| `LvContainer` | Container flex com layout responsivo |
+| `LvDisplayer` | Exibidor com formatação automática (CPF, CNPJ, moeda) |
+| `LvAvatar` | Avatar com imagem ou iniciais automáticas |
+| `LvBadge` | Badge para notificações e contadores |
+| `LvTag` | Tag/chip com tipos e ações |
+| `LvProgress` | Barra de progresso linear ou circular |
+| `LvDivider` | Separador horizontal ou vertical |
+| `LvEmpty` | Estado vazio para listas |
+| `LvSkeleton` | Skeleton loading placeholder |
+| `LvTooltip` | Tooltip responsivo com tipos |
+| `LvCreditCard` | Cartão de crédito com detecção de bandeira e banco BR |
 
-## Config
+---
 
-### .env
-```env
-APP_URL=http://localhost:8000
-DB_CONNECTION=sqlite
-```
+## 📸 Screenshots
 
-### API Root (Frontend)
-Definido em `ui/src/index.template.html`. Reseta automaticamente ao mudar versão.
+<p align="center">
+  <img src="docs/assets/screenshot-dark.png" alt="Dark Mode" width="45%">
+  <img src="docs/assets/screenshot-light.png" alt="Light Mode" width="45%">
+</p>
 
-## CORS
+---
 
-Configurado em `config/cors.php` para aceitar todas origens em desenvolvimento.
+## 🤝 Contribuindo
 
-## Licença
+Contribuições são bem-vindas! Sinta-se à vontade para abrir issues e pull requests.
 
-MIT
+1. Fork o projeto
+2. Crie sua feature branch (`git checkout -b feature/AmazingFeature`)
+3. Commit suas mudanças (`git commit -m 'Add some AmazingFeature'`)
+4. Push para a branch (`git push origin feature/AmazingFeature`)
+5. Abra um Pull Request
+
+---
+
+## 📝 Licença
+
+Este projeto está sob a licença MIT. Veja o arquivo [LICENSE](LICENSE) para mais detalhes.
+
+---
+
+<p align="center">
+  Feito com ❤️ por <a href="https://github.com/leonardo-matheus">Leonardo Matheus</a>
+</p>
