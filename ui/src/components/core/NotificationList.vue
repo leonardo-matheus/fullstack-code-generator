@@ -1,133 +1,111 @@
 <template>
-  <q-card style="width: 350px">
-    <q-card-actions>
-      <div class="text-bold text-grey-7 col-6 q-pl-sm">
-        Notifications ({{ summary.total_unread }})
-      </div>
-      <div class="col-6 text-right">
-        <q-btn
-          size="sm"
-          flat
-          dense
-          label="View All"
-          class="bg-grey-2 text-capitalize"
-          :to="{ name: 'notifications' }"
-        />
-      </div>
-    </q-card-actions>
-    <q-tabs
-      v-model="tab"
-      dense
-      class="text-grey"
-      active-color="primary"
-      indicator-color="primary"
-      align="justify"
-      narrow-indicator
-    >
-      <template v-for="(key, index) in Object.keys(list)" :key="index">
-        <q-tab :name="key" :label="key" class="text-capitalize">
-          <q-badge v-if="summary[`total_unread_${key}`]" color="red" floating>{{
-            summary[`total_unread_${key}`]
-          }}</q-badge>
-        </q-tab>
-      </template>
-    </q-tabs>
+  <div class="lv-notification-list">
+    <div class="lv-notification-header">
+      <span class="lv-notification-title">
+        Notifications ({{ summary.total_unread || 0 }})
+      </span>
+      <router-link :to="{ name: 'notifications' }" class="lv-notification-link">
+        View All
+      </router-link>
+    </div>
 
-    <q-separator />
-
-    <q-tab-panels v-model="tab" animated>
-      <template v-for="(key, index) in Object.keys(list)" :key="index">
-        <q-tab-panel :name="key" class="no-padding">
-          <template v-for="(notif, i) in list[key]" :key="i + 'sys'">
-            <q-item
-              clickable
-              v-ripple
-              :href="makeLink(notif)"
-              target="_blank"
-              @click="setRead(notif.id)"
+    <n-tabs v-model:value="tab" type="line" size="small" animated>
+      <n-tab-pane 
+        v-for="(key, index) in Object.keys(list)" 
+        :key="index"
+        :name="key" 
+        :tab="getTabLabel(key)"
+      >
+        <n-scrollbar style="max-height: 360px;">
+          <n-list hoverable clickable v-if="list[key].length > 0">
+            <n-list-item 
+              v-for="(notif, i) in list[key]" 
+              :key="i"
+              @click="handleNotifClick(notif)"
             >
-              <q-item-section avatar>
-                <q-avatar color="primary">
-                  <q-img
-                    v-if="notif.creator_pic"
-                    :src="notif.creator_pic"
-                    fit="cover"
-                  >
-                    <template v-slot:error>
-                      <div
-                        class="absolute-full flex flex-center bg-primary text-white"
-                      >
-                        <small style="font-size: 13px">Cannot load image</small>
-                      </div>
-                    </template>
-                  </q-img>
-                  <b v-else class="text-white">{{
-                    $Helper.getFirstChar(notif.creator)
-                  }}</b>
-                </q-avatar>
-              </q-item-section>
-
-              <q-item-section>
-                <q-item-label lines="2">{{ notif.title }}</q-item-label>
-                <q-item-label v-if="notif.category" lines="2">
-                  <q-badge>{{ notif.category }}</q-badge>
-                </q-item-label>
-                <q-item-label caption lines="2">
-                  {{ notif.content }}
-                </q-item-label>
-                <q-item-label caption>
-                  <lv-user :username="notif.creator" />
-                  <span class="text-dark">
-                    - {{ $Helper.beautyDate(notif.date, " ", true) }}</span
-                  >
-                </q-item-label>
-              </q-item-section>
-
-              <q-item-section side top>
-                <small
-                  ><i>{{ notif.time_ago }}</i></small
+              <template #prefix>
+                <n-avatar 
+                  round 
+                  :size="40"
+                  :src="notif.creator_pic"
                 >
-              </q-item-section>
-            </q-item>
-            <q-separator inset="item" />
-          </template>
-
-          <lv-loading v-if="loading" noPadding label="..." size="3em" />
-
-          <q-item v-if="!list[key].length && !loading" clickable v-ripple>
-            <q-item-section>
-              <q-item-label lines="1">There's nothing</q-item-label>
-              <q-item-label caption lines="2">
-                There's no notification for you right now
-              </q-item-label>
-            </q-item-section>
-          </q-item>
-
-          <q-item
-            v-if="summary[`total_unread_${key}`] > list[key].length"
-            clickable
-            v-ripple
-            dense
-          >
-            <q-item-section>
-              <q-item-label lines="1" align="center" class="text-grey-7"
-                >View All</q-item-label
+                  {{ $Helper.getFirstChar(notif.creator) }}
+                </n-avatar>
+              </template>
+              <n-thing
+                :title="notif.title"
+                :description="notif.content"
+                content-style="margin-top: 4px;"
               >
-            </q-item-section>
-          </q-item>
-        </q-tab-panel>
-      </template>
-    </q-tab-panels>
-  </q-card>
+                <template #header-extra>
+                  <n-text depth="3" style="font-size: 12px;">
+                    {{ notif.time_ago }}
+                  </n-text>
+                </template>
+                <template #description>
+                  <n-space size="small" :wrap="false">
+                    <n-tag v-if="notif.category" size="tiny" :bordered="false">
+                      {{ notif.category }}
+                    </n-tag>
+                    <n-text depth="3" style="font-size: 12px;">
+                      {{ $Helper.beautyDate(notif.date, " ", true) }}
+                    </n-text>
+                  </n-space>
+                </template>
+              </n-thing>
+            </n-list-item>
+          </n-list>
+          
+          <n-spin v-if="loading" size="small" class="lv-notification-loading" />
+          
+          <n-empty 
+            v-if="!list[key]?.length && !loading" 
+            description="No notifications"
+            size="small"
+            class="lv-notification-empty"
+          />
+        </n-scrollbar>
+      </n-tab-pane>
+    </n-tabs>
+  </div>
 </template>
 
 <script>
 import { ref, reactive, onMounted, computed, defineComponent } from "vue";
 import { useRoute, useRouter } from "vue-router";
+import { 
+  NTabs, 
+  NTabPane, 
+  NList, 
+  NListItem, 
+  NAvatar, 
+  NThing,
+  NText,
+  NTag,
+  NSpace,
+  NEmpty,
+  NSpin,
+  NScrollbar
+} from "naive-ui";
 import useServices from "./../../composables/Services";
 
 export default defineComponent({
   name: "NotificationList",
+  components: {
+    NTabs,
+    NTabPane,
+    NList,
+    NListItem,
+    NAvatar,
+    NThing,
+    NText,
+    NTag,
+    NSpace,
+    NEmpty,
+    NSpin,
+    NScrollbar,
+  },
+  emits: ["loaded"],
   setup(props, { emit }) {
     const { Config, Helper, Handler, Api } = useServices();
     const route = useRoute();
@@ -145,6 +123,11 @@ export default defineComponent({
       total_unread_system: 0,
       total_unread_direct: 0,
     });
+
+    function getTabLabel(key) {
+      const count = summary[`total_unread_${key}`] || 0;
+      return count > 0 ? `${key} (${count})` : key;
+    }
 
     onMounted(() => {
       getData();
@@ -189,14 +172,70 @@ export default defineComponent({
       });
     }
 
+    function handleNotifClick(notif) {
+      setRead(notif.id);
+      const link = makeLink(notif);
+      if (link) {
+        window.open(link, "_blank");
+      }
+    }
+
     return {
       tab,
       loading,
       list,
       summary,
+      getTabLabel,
       makeLink,
       setRead,
+      handleNotifClick,
     };
   },
 });
 </script>
+
+<style lang="scss" scoped>
+.lv-notification-list {
+  width: 360px;
+  max-width: 100%;
+}
+
+.lv-notification-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 12px 16px;
+  border-bottom: 1px solid var(--lv-border-color);
+}
+
+.lv-notification-title {
+  font-weight: 600;
+  font-size: 14px;
+  color: var(--lv-text-primary);
+}
+
+.lv-notification-link {
+  font-size: 13px;
+  color: #6366f1;
+  text-decoration: none;
+  
+  &:hover {
+    text-decoration: underline;
+  }
+}
+
+.lv-notification-loading,
+.lv-notification-empty {
+  padding: 32px 16px;
+  display: flex;
+  justify-content: center;
+}
+
+:deep(.n-tabs-nav) {
+  padding: 0 16px;
+}
+
+:deep(.n-list-item) {
+  padding: 12px 16px;
+}
+</style>

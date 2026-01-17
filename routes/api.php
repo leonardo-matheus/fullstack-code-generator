@@ -46,6 +46,7 @@ Route::middleware('auth:sanctum')->group( function () use ($ApiNS)  {
         Route::post('/update-profile', $ApiNS .'UsersController@updateProfile');
         Route::post('/upload-picture', $ApiNS .'UsersController@uploadPicture');
         Route::get('/notifications', $ApiNS .'UsersController@notifications');
+        Route::get('/notifications/unread-count', $ApiNS .'UsersController@notificationsUnreadCount');
         Route::get('/notification-list', $ApiNS .'UsersController@notificationList');
         Route::put('/read-notifications', $ApiNS .'UsersController@readNotifications');
         Route::put('/send-notice', $ApiNS .'UsersController@sendNotice');

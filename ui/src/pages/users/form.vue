@@ -1,69 +1,118 @@
 <template>
-  <div
-    :class="`${fromModal ? '' : 'q-pb-xs'} fix-content-modal row root`"
-    style="min-width: 75vw"
-  >
-    <q-form @submit="submit" class="col-12 row animated fadeIn">
-      <!-- Header -->
+  <div class="user-form">
+    <n-form
+      ref="formRef"
+      :model="dataModel"
+      :rules="rules"
+      label-placement="top"
+      label-width="auto"
+      @submit.prevent="submit"
+    >
+      <!-- Header (for standalone page) -->
       <lv-header-page
-        class="bg-white"
-        split
+        v-if="!fromModal"
+        :title="Meta.name"
+        :subtitle="type === 'update' ? 'Editar' : 'Criar'"
+        :breadcrumb="[
+          { label: 'Home', to: '/' },
+          { label: Meta.name, to: { name: Meta.module } },
+          { label: type === 'update' ? 'Editar' : 'Criar' }
+        ]"
         showBack
         :backTo="{ name: Meta.module }"
-        :preventBackTo="fromModal ? true : false"
       >
-        <template v-slot:left>
-          <lv-breadcumb v-if="!fromModal" :title="Meta.name" :subtitle="type" />
-        </template>
-        <template v-slot:right>
-          <lv-btn
-            labelVisibility
-            icon="reply"
-            label="Cancel"
-            ref="closeForm"
-            @click="backToRoot()"
-            v-close-popup
-          />
-          <lv-btn
-            v-if="!loading"
-            labelVisibility
-            icon="check"
-            label="Save"
-            color="primary"
-            :disable="disableSubmit"
-            type="submit"
-          />
+        <template #actions>
+          <n-space>
+            <lv-btn 
+              icon="close" 
+              label="Cancelar" 
+              @click="backToRoot()"
+            />
+            <lv-btn
+              v-if="!loading"
+              type="primary"
+              icon="checkmark"
+              label="Salvar"
+              :disabled="disableSubmit"
+              :loading="disableSubmit"
+              @click="submit"
+            />
+          </n-space>
         </template>
       </lv-header-page>
 
       <!-- Content -->
       <lv-loading v-if="loading" />
-      <lv-container v-if="!loading" class="col-12" height="30vh">
-        <lv-input
-          class="col-sm-4"
-          label="Name"
-          v-model="dataModel.name"
-          required
-        />
-        <lv-input class="col-sm-4" label="Email" v-model="dataModel.email" />
-        <lv-input
-          class="col-sm-4"
-          label="Password"
-          v-model="dataModel.password"
-        />
-      </lv-container>
-    </q-form>
+      
+      <n-card v-if="!loading" :bordered="false">
+        <n-grid :cols="3" :x-gap="16" :y-gap="8" responsive="screen" item-responsive>
+          <n-grid-item span="3 m:1">
+            <lv-input
+              label="Nome"
+              v-model="dataModel.name"
+              required
+              placeholder="Digite o nome"
+            />
+          </n-grid-item>
+          <n-grid-item span="3 m:1">
+            <lv-input
+              label="Email"
+              v-model="dataModel.email"
+              type="email"
+              placeholder="Digite o email"
+            />
+          </n-grid-item>
+          <n-grid-item span="3 m:1">
+            <lv-input
+              label="Senha"
+              v-model="dataModel.password"
+              type="password"
+              placeholder="Digite a senha"
+              show-password-on="click"
+            />
+          </n-grid-item>
+        </n-grid>
+
+        <!-- Modal Actions -->
+        <template v-if="fromModal" #action>
+          <n-space justify="end">
+            <lv-btn 
+              icon="close" 
+              label="Cancelar" 
+              @click="$emit('close')"
+            />
+            <lv-btn
+              type="primary"
+              icon="checkmark"
+              label="Salvar"
+              :disabled="disableSubmit"
+              :loading="disableSubmit"
+              @click="submit"
+            />
+          </n-space>
+        </template>
+      </n-card>
+    </n-form>
   </div>
 </template>
 
 <script>
 import { ref, reactive, computed, onBeforeMount, defineComponent } from "vue";
+import { NForm, NCard, NGrid, NGridItem, NSpace } from "naive-ui";
 import useServices from "./../../composables/Services";
 import { useRouter, useRoute } from "vue-router";
 import Meta from "./meta";
 
 export default defineComponent({
   name: Meta.moduleName + "Form",
+  components: {
+    NForm,
+    NCard,
+    NGrid,
+    NGridItem,
+    NSpace,
+  },
+  emits: ['close'],
   props: {
     data: {
       type: Object,
@@ -74,27 +123,37 @@ export default defineComponent({
       default: null,
     },
     disableMeta: {
-      // disable setPageMeta
       type: Boolean,
       default: false,
     },
   },
-  setup(props) {
+  setup(props, { emit }) {
     const { Config, Handler, Helper, Api, Store, SetMetaPage } = useServices();
     const router = useRouter();
     const route = useRoute();
 
     // Properties
-    const closeForm = ref(1); // refs component
+    const formRef = ref(null);
     const loading = ref(false);
     const disableSubmit = ref(false);
     const dataModel = ref({ ...Meta.model });
     const topMenu = [{ name: "Refresh", event: onRefresh }];
-    const select = reactive({
-      // select sources
-    });
+    const select = reactive({});
+    
+    const rules = {
+      name: {
+        required: true,
+        message: 'Nome é obrigatório',
+        trigger: ['blur', 'input']
+      },
+      email: {
+        type: 'email',
+        message: 'Email inválido',
+        trigger: ['blur', 'input']
+      }
+    };
 
-    /* LIFECYCLE : all processes that are executed in a certain lifecycle are defined here */
+    /* LIFECYCLE */
     onBeforeMount(() => {
       if (!Meta.permission[type.value]) Handler._403();
       else {
@@ -107,7 +166,7 @@ export default defineComponent({
       }
     });
 
-    /* COMPUTED : all computed variables are defined here */
+    /* COMPUTED */
     const fromModal = computed(() => {
       return props.data ? props.data : null;
     });
@@ -120,17 +179,18 @@ export default defineComponent({
       return id.value ? "update" : "create";
     });
 
-    /* METHODS : all methods are defined here */
+    /* METHODS */
     function onRefresh() {
       if (id.value) getData();
     }
 
     function backToRoot(data) {
       if (!fromModal.value) {
-        console.log("br", data);
         if (data) router.push({ name: `${Meta.module}-detail`, params: data });
         else router.push({ name: Meta.module });
-      } else if (closeForm.value) closeForm.value.$el.click();
+      } else {
+        emit('close');
+      }
     }
 
     function resetModel() {
@@ -138,10 +198,6 @@ export default defineComponent({
     }
 
     function validateSubmit() {
-      // if (!dataModel.id) { // example validation
-      //   Helper.showAlert('Opps!', 'id is rquired!')
-      //   return false
-      // } else return true // must set true on ending return
       return true;
     }
 
@@ -157,18 +213,18 @@ export default defineComponent({
       Helper.loadingOverlay(false);
       callbackFunc(data);
       if (status === 200) {
-        Helper.showSuccess("Succesfully", message);
+        Helper.showSuccess("Sucesso", message);
         backToRoot(data);
       } else disableSubmit.value = false;
     };
 
     function save() {
-      Helper.loadingOverlay(true, "Saving..");
+      Helper.loadingOverlay(true, "Salvando...");
       Api.post(Meta.module, dataModel.value, callback);
     }
 
     function update() {
-      Helper.loadingOverlay(true, "Updating..");
+      Helper.loadingOverlay(true, "Atualizando...");
       Api.put(
         `${Meta.module}/${dataModel.value.id}`,
         dataModel.value,
@@ -192,16 +248,15 @@ export default defineComponent({
 
     return {
       Meta,
-      closeForm,
+      formRef,
       loading,
       disableSubmit,
       dataModel,
       select,
-      // computed
+      rules,
       type,
       fromModal,
       id,
-      // methods
       onRefresh,
       getData,
       submit,
@@ -210,3 +265,10 @@ export default defineComponent({
   },
 });
 </script>
+
+<style scoped>
+.user-form {
+  width: 100%;
+  min-width: 500px;
+}
+</style>

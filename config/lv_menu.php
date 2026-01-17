@@ -16,6 +16,33 @@ return [
         'icon' => 'home',
     ],
     [
+        'title' => 'Generator',
+        'route' => null,
+        'icon' => 'auto_awesome',
+        'children' => [
+            [
+                'title' => 'Module Wizard',
+                'route' => 'generator',
+                'icon' => 'add_box',
+            ],
+            [
+                'title' => 'Advanced Editor',
+                'route' => 'generator-legacy',
+                'icon' => 'edit_note',
+            ],
+            [
+                'title' => 'Code Output',
+                'route' => 'code-output',
+                'icon' => 'code',
+            ],
+        ]
+    ],
+    [
+        'title' => 'Components',
+        'route' => 'example',
+        'icon' => 'widgets',
+    ],
+    [
         'title' => 'Management',
         'route' => null,
         'icon' => 'manage_accounts',

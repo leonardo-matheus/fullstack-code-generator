@@ -1,30 +1,37 @@
 <template>
-  <div class="bg-root text-dark text-center text-center" style="height: 80vh">
-    <div>
-      <div style="font-size: 30vh">403</div>
-
-      <div class="text-h2 text-grey-7">Forbidden</div>
-      <div class="text-grey-7">
-        You don't have permission to access this page!
-      </div>
-
-      <q-btn
-        unelevated
-        class="q-mt-xl"
-        color="dark"
-        to="/p"
-        label="Go Home"
-        no-caps
-        icon="reply"
-      />
-    </div>
-  </div>
+  <lv-container class="error-page error-403">
+    <n-result
+      status="403"
+      title="403"
+      description="Você não tem permissão para acessar esta página."
+    >
+      <template #footer>
+        <lv-btn 
+          color="primary" 
+          icon="home" 
+          label="Voltar ao Início"
+          @click="$router.push('/')"
+        />
+      </template>
+    </n-result>
+  </lv-container>
 </template>
 
 <script>
 import { defineComponent } from "vue";
+import { NResult } from "naive-ui";
 
 export default defineComponent({
   name: "ForbiddenPage",
+  components: { NResult }
 });
 </script>
+
+<style scoped>
+.error-page {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 60vh;
+}
+</style>

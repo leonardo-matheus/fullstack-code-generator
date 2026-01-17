@@ -1,150 +1,256 @@
 <template>
-  <transition
-    appear
-    enter-active-class="animated fadeIn "
-    leave-active-class="animated fadeOut"
-  >
-    <q-layout class="bg-white">
-      <q-page-container style="padding: 0 !important">
-        <div class="row colpad full-height">
-          <div class="col-12 col-sm-6 gt-xs bg-side">&nbsp;</div>
-          <div class="col-12 col-sm-6 row bg-white">
-            <div class="q-pt-lg q-mt-lg col-12 offset-sm-2 col-sm-8">
-              <div
-                style="text-align: center; padding-top: 13px"
-                v-touch-hold.mouse="ApiRoot"
-                class="q-mt-lg q-pb-md"
-              >
-                <q-img :src="appLogo" spinner-color="white" style="width: 92px">
-                  <template v-slot:error>
-                    <div
-                      class="absolute-full bg-white flex flex-center text-grey-4 text-caption text-center"
-                    >
-                      <q-icon name="broken_image" style="font-size: 62px" />
-                    </div>
-                  </template>
-                </q-img>
-
-                <div>
-                  <small class="text-grey-7">{{ appName }}</small>
-                  <br />
-                  <br />
-                  <small class="text-red-9">
-                    * Hold click logo to open setting to change Apiroot /
-                    baseUrl <br />
-                    (for production you must takeout this event)
-                  </small>
-                </div>
-              </div>
-
-              <q-form class="form-area row" @submit.prevent="login">
-                <div class="col-12 col-md-12 q-px-md q-pb-sm">
-                  <q-toggle
-                    label="Login using username"
-                    v-model="useUsername"
-                  />
-                </div>
-
-                <lv-input
-                  class="q-pa-md"
-                  v-model="dataModel.email"
-                  required
-                  :type="useUsername ? 'text' : 'email'"
-                  :placeholder="useUsername ? 'Username' : 'Email'"
-                >
-                  <template v-slot:prepend>
-                    <q-icon :name="useUsername ? 'alternate_email' : 'email'" />
-                  </template>
-                </lv-input>
-
-                <lv-input
-                  class="q-pa-md"
-                  v-model="dataModel.password"
-                  required
-                  type="password"
-                  placeholder="Password"
-                >
-                  <template v-slot:prepend> <q-icon name="lock" /> </template>
-                </lv-input>
-
-                <div class="col-12 col-md-12 q-px-md q-pb-sm">
-                  <lv-btn
-                    type="submit"
-                    size="lg"
-                    color="primary"
-                    icon="login"
-                    label="Login"
-                    class="full-width"
-                    :loading="loading"
-                  >
-                    <template v-slot:loading>
-                      <q-spinner-facebook />
-                    </template>
-                  </lv-btn>
-                </div>
-
-                <div class="col-12 col-md-12 pb-2 text-center">
-                  <small class="bold text-grey-7">
-                    <span class="">App v.{{ $Config.version() }} </span> <br />
-                    <span v-if="version" class="animated fadeIn"
-                      >Backend v.{{ version }}</span
-                    >
-                  </small>
-                </div>
-              </q-form>
+  <div class="lv-login-page">
+    <div class="lv-login-container">
+      <!-- Left side - Branding -->
+      <div class="lv-login-branding">
+        <div class="lv-branding-content">
+          <div class="lv-branding-logo">
+            <n-icon :size="64" color="#6366f1">
+              <CodeSlashOutline />
+            </n-icon>
+          </div>
+          <h1 class="lv-branding-title">Lavarel</h1>
+          <p class="lv-branding-subtitle">
+            Fullstack Code Generator
+          </p>
+          <div class="lv-branding-features">
+            <div class="lv-feature">
+              <n-icon :size="20" color="#10b981">
+                <CheckmarkCircleOutline />
+              </n-icon>
+              <span>Laravel + Vue.js</span>
+            </div>
+            <div class="lv-feature">
+              <n-icon :size="20" color="#10b981">
+                <CheckmarkCircleOutline />
+              </n-icon>
+              <span>Auto CRUD Generation</span>
+            </div>
+            <div class="lv-feature">
+              <n-icon :size="20" color="#10b981">
+                <CheckmarkCircleOutline />
+              </n-icon>
+              <span>Role-Based Permissions</span>
             </div>
           </div>
         </div>
-      </q-page-container>
-    </q-layout>
-  </transition>
+        <div class="lv-branding-decoration"></div>
+      </div>
+
+      <!-- Right side - Login Form -->
+      <div class="lv-login-form-wrapper">
+        <div class="lv-login-form-container">
+          <!-- Theme Toggle -->
+          <div class="lv-login-header">
+            <n-tooltip trigger="hover">
+              <template #trigger>
+                <n-button quaternary circle @click="toggleTheme" size="small">
+                  <template #icon>
+                    <n-icon :size="18">
+                      <SunnyOutline v-if="!isDark" />
+                      <MoonOutline v-else />
+                    </n-icon>
+                  </template>
+                </n-button>
+              </template>
+              Toggle Theme
+            </n-tooltip>
+          </div>
+
+          <!-- Logo -->
+          <div class="lv-login-logo">
+            <n-avatar 
+              :size="72" 
+              round
+              :src="appLogo"
+              class="lv-login-avatar"
+            >
+              <n-icon :size="36">
+                <PersonOutline />
+              </n-icon>
+            </n-avatar>
+          </div>
+
+          <h2 class="lv-login-title">Welcome back</h2>
+          <p class="lv-login-subtitle">
+            Sign in to continue to {{ appName }}
+          </p>
+
+          <!-- Login Form -->
+          <n-form 
+            ref="formRef" 
+            :model="dataModel" 
+            :rules="rules"
+            @submit.prevent="login"
+          >
+            <n-form-item path="email" :label="useUsername ? 'Username' : 'Email'">
+              <n-input
+                v-model:value="dataModel.email"
+                :placeholder="useUsername ? 'Enter your username' : 'Enter your email'"
+                size="large"
+                :input-props="{ autocomplete: 'email' }"
+              >
+                <template #prefix>
+                  <n-icon :size="18" color="#94a3b8">
+                    <MailOutline v-if="!useUsername" />
+                    <PersonOutline v-else />
+                  </n-icon>
+                </template>
+              </n-input>
+            </n-form-item>
+
+            <n-form-item path="password" label="Password">
+              <n-input
+                v-model:value="dataModel.password"
+                type="password"
+                show-password-on="click"
+                placeholder="Enter your password"
+                size="large"
+                :input-props="{ autocomplete: 'current-password' }"
+              >
+                <template #prefix>
+                  <n-icon :size="18" color="#94a3b8">
+                    <LockClosedOutline />
+                  </n-icon>
+                </template>
+              </n-input>
+            </n-form-item>
+
+            <div class="lv-login-options">
+              <n-switch v-model:value="useUsername" size="small">
+                <template #checked>Username</template>
+                <template #unchecked>Email</template>
+              </n-switch>
+            </div>
+
+            <n-button
+              type="primary"
+              block
+              size="large"
+              :loading="loading"
+              attr-type="submit"
+              class="lv-login-button"
+            >
+              <template #icon>
+                <n-icon>
+                  <LogInOutline />
+                </n-icon>
+              </template>
+              Sign In
+            </n-button>
+          </n-form>
+
+          <!-- Version Info -->
+          <div class="lv-login-footer">
+            <n-text depth="3" class="lv-version-text">
+              App v.{{ $Config.version() }}
+              <span v-if="version"> · Backend v.{{ version }}</span>
+            </n-text>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
 </template>
 
 <script>
-import useServices from "./../composables/Services";
-import { computed, defineComponent, ref, onBeforeMount, onMounted } from "vue";
+import { computed, defineComponent, ref, onMounted } from "vue";
 import { useRouter, useRoute } from "vue-router";
+import {
+  NForm,
+  NFormItem,
+  NInput,
+  NButton,
+  NSwitch,
+  NAvatar,
+  NIcon,
+  NText,
+  NTooltip,
+  useMessage,
+} from "naive-ui";
+import {
+  MailOutline,
+  PersonOutline,
+  LockClosedOutline,
+  LogInOutline,
+  CodeSlashOutline,
+  CheckmarkCircleOutline,
+  SunnyOutline,
+  MoonOutline,
+} from "@vicons/ionicons5";
+import useServices from "../composables/Services";
+import { useTheme } from "../composables/useTheme";
+
 export default defineComponent({
   name: "Login",
+  components: {
+    NForm,
+    NFormItem,
+    NInput,
+    NButton,
+    NSwitch,
+    NAvatar,
+    NIcon,
+    NText,
+    NTooltip,
+    MailOutline,
+    PersonOutline,
+    LockClosedOutline,
+    LogInOutline,
+    CodeSlashOutline,
+    CheckmarkCircleOutline,
+    SunnyOutline,
+    MoonOutline,
+  },
   setup() {
     const route = useRoute();
     const router = useRouter();
-    const { Config, Handler, Helper, Api, Store, SetMetaPage } = useServices();
-    const { GlobalStore } = useServices();
+    const message = useMessage();
+    const { Config, Handler, Helper, Api } = useServices();
+    const { isDark, toggleTheme } = useTheme();
+    
+    const formRef = ref(null);
     const dataModel = ref({
       email: "",
       password: "",
     });
 
-    const isPwd = ref(true);
     const loading = ref(false);
     const useUsername = ref(false);
-    const disableSubmit = ref(false);
     const version = ref(null);
     const company = ref(null);
+
+    const rules = {
+      email: {
+        required: true,
+        message: useUsername.value ? "Please enter username" : "Please enter email",
+        trigger: ["input", "blur"],
+      },
+      password: {
+        required: true,
+        message: "Please enter password",
+        trigger: ["input", "blur"],
+      },
+    };
 
     onMounted(() => {
       getVersion();
       getSetting();
 
-      if (route.query.e) {
-        if (route.query.e === "miss-apiroot") {
-          Config.setApiRoot(
-            "Your Api Root configuration is missing, this is default value by sistem, make sure the value is correct or you can change the value.",
-            "/login"
-          );
-        }
+      if (route.query.e === "miss-apiroot") {
+        Config.setApiRoot(
+          "Your Api Root configuration is missing",
+          "/login"
+        );
       }
     });
 
     const appName = computed(() => {
-      let res = company.value?.list?.app_name?.value || Config.appName();
-      return res;
+      return company.value?.list?.app_name?.value || Config.appName();
     });
 
     const appLogo = computed(() => {
-      let res = company.value?.list?.url_logo?.value || Config.appLogo();
-      return res;
+      return company.value?.list?.url_logo?.value || Config.appLogo();
     });
 
     function auth() {
@@ -156,79 +262,210 @@ export default defineComponent({
     }
 
     function login() {
-      loading.value = true;
-      Helper.loadingOverlay();
+      formRef.value?.validate((errors) => {
+        if (errors) return;
+        
+        loading.value = true;
 
-      disableSubmit.value = true;
-      let send = { password: dataModel.value.password };
-      if (useUsername.value) send.username = dataModel.value.email;
-      else send.email = dataModel.value.email;
+        let send = { password: dataModel.value.password };
+        if (useUsername.value) send.username = dataModel.value.email;
+        else send.email = dataModel.value.email;
 
-      Api.post("app/login", send, (status, data, message, full) => {
-        loading.value = false;
-        Helper.loadingOverlay(false);
-        if (status === 200) {
-          data.permissions = Handler.makePermissions(data.permissions);
-          disableSubmit.value = false;
-          Config.credentials(data);
-          auth();
-        }
+        Api.post("app/login", send, (status, data, msg) => {
+          loading.value = false;
+          if (status === 200) {
+            data.permissions = Handler.makePermissions(data.permissions);
+            Config.credentials(data);
+            message.success("Login successful!");
+            auth();
+          } else {
+            message.error(msg || "Login failed");
+          }
+        });
       });
-      // end
     }
 
     function getVersion() {
-      Api.get("app/version", (status, data, message, response) => {
+      Api.get("app/version", (status, data) => {
         if (status === 200) version.value = data;
       });
     }
 
     function getSetting() {
-      Api.get(
-        "app/settings?module=company",
-        (status, data, message, response) => {
-          if (status === 200) company.value = data;
-        }
-      );
-    }
-
-    function ApiRoot() {
-      Config.setApiRoot();
-    }
-
-    function ApiTmp() {
-      Config.setApiTemp();
+      Api.get("app/settings?module=company", (status, data) => {
+        if (status === 200) company.value = data;
+      });
     }
 
     return {
+      formRef,
       dataModel,
-      isPwd,
+      rules,
       useUsername,
-      disableSubmit,
       version,
       loading,
-      company,
       appName,
       appLogo,
-      // methods
-      auth,
+      isDark,
+      toggleTheme,
       login,
-      getVersion,
-      ApiRoot,
-      ApiTmp,
     };
   },
 });
 </script>
 
-<style>
-.bg-side {
-  background-image: url("../../public/assets/pattern-1.jpg");
-  background-color: #fff;
-  background-repeat: no-repeat;
-  background-position: right;
-  background-size: cover;
-  height: 100% !important;
+<style lang="scss" scoped>
+.lv-login-page {
   min-height: 100vh;
+  background: var(--lv-bg-primary);
+}
+
+.lv-login-container {
+  display: flex;
+  min-height: 100vh;
+}
+
+.lv-login-branding {
+  display: none;
+  flex: 1;
+  background: linear-gradient(135deg, #6366f1 0%, #8b5cf6 50%, #a855f7 100%);
+  position: relative;
+  overflow: hidden;
+  
+  @media (min-width: 768px) {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+}
+
+.lv-branding-content {
+  position: relative;
+  z-index: 2;
+  text-align: center;
+  padding: 48px;
+  color: white;
+}
+
+.lv-branding-logo {
+  margin-bottom: 24px;
+  
+  :deep(.n-icon) {
+    color: white !important;
+  }
+}
+
+.lv-branding-title {
+  font-size: 48px;
+  font-weight: 700;
+  margin: 0 0 8px;
+  letter-spacing: -0.02em;
+}
+
+.lv-branding-subtitle {
+  font-size: 18px;
+  opacity: 0.9;
+  margin: 0 0 48px;
+}
+
+.lv-branding-features {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  text-align: left;
+  max-width: 280px;
+  margin: 0 auto;
+}
+
+.lv-feature {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  font-size: 15px;
+  
+  :deep(.n-icon) {
+    color: rgba(255, 255, 255, 0.9) !important;
+  }
+}
+
+.lv-branding-decoration {
+  position: absolute;
+  bottom: -200px;
+  right: -200px;
+  width: 500px;
+  height: 500px;
+  border-radius: 50%;
+  background: rgba(255, 255, 255, 0.1);
+}
+
+.lv-login-form-wrapper {
+  flex: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 24px;
+  background: var(--lv-bg-secondary);
+  
+  @media (min-width: 768px) {
+    max-width: 480px;
+  }
+}
+
+.lv-login-form-container {
+  width: 100%;
+  max-width: 360px;
+}
+
+.lv-login-header {
+  display: flex;
+  justify-content: flex-end;
+  margin-bottom: 32px;
+}
+
+.lv-login-logo {
+  display: flex;
+  justify-content: center;
+  margin-bottom: 24px;
+}
+
+.lv-login-avatar {
+  background: linear-gradient(135deg, #6366f1, #8b5cf6);
+}
+
+.lv-login-title {
+  font-size: 28px;
+  font-weight: 600;
+  text-align: center;
+  margin: 0 0 8px;
+  color: var(--lv-text-primary);
+}
+
+.lv-login-subtitle {
+  font-size: 15px;
+  text-align: center;
+  color: var(--lv-text-secondary);
+  margin: 0 0 32px;
+}
+
+.lv-login-options {
+  display: flex;
+  justify-content: flex-end;
+  margin-bottom: 24px;
+}
+
+.lv-login-button {
+  height: 48px;
+  font-size: 15px;
+  font-weight: 500;
+  margin-top: 8px;
+}
+
+.lv-login-footer {
+  text-align: center;
+  margin-top: 32px;
+}
+
+.lv-version-text {
+  font-size: 12px;
 }
 </style>

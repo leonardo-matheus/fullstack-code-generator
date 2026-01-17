@@ -1,18 +1,17 @@
 <template>
-  <div class="row bg-white" v-if="Meta.permission.browse">
+  <lv-container v-if="Meta.permission.browse">
     <!-- Header -->
-    <lv-header-page v-if="controls.title" class="bg-white" split>
-      <template v-slot:left>
-        <span class="page-title animated zoomIn">{{ Meta.name }}</span>
-      </template>
-      <template v-if="controls.action" v-slot:right>
+    <lv-header-page 
+      v-if="controls.title" 
+      :title="Meta.name"
+      :breadcrumb="[{ label: 'Home', to: '/' }, { label: Meta.name }]"
+    >
+      <template v-if="controls.action" #actions>
         <lv-btn
           v-if="Meta.permission.create"
-          soft
+          type="primary"
           icon="add"
-          label="Add New"
-          labelVisibility
-          :to="action('form', Meta.model, true)"
+          label="Adicionar Novo"
           @click="action('form', Meta.model)"
         />
       </template>
@@ -20,7 +19,6 @@
 
     <!-- List -->
     <lv-table
-      class="col-12"
       ref="refTable"
       :config="table"
       :hideTop="hideTop"
@@ -36,66 +34,61 @@
       :allowTrash="Meta.permission.delete"
       :allowRestore="Meta.permission.restore"
     >
-      <template v-slot:col-action="props">
-        <lv-btn soft icon="more_horiz" color="primary">
-          <lv-action-box label="Actions" width="120px">
-            <lv-action-item
-              v-if="Meta.permission.read"
-              label="View"
-              icon="visibility"
-              color="blue"
-              :to="action('detail', props.row, true)"
-              @click="action('detail', props.row)"
-            />
-            <lv-action-item
-              v-if="Meta.permission.update"
-              label="Edit"
-              icon="edit"
-              color="green"
-              :to="action('form', props.row, true)"
-              @click="action('form', props.row)"
-            />
-          </lv-action-box>
-        </lv-btn>
-      </template>
-
-      <template v-slot:col-name="props">
-        <q-avatar size="32px" class="bg-primary q-mr-sm">
-          <q-img v-if="props.row.picture" :src="props.row.picture" fit="cover">
-            <template v-slot:error>
-              {{ $Helper.getFirstChar(props.row.username) }}
-            </template>
-          </q-img>
-          <span v-else>{{ $Helper.getFirstChar(props.row.username) }}</span>
-        </q-avatar>
-
-        <span class="text-bold">{{ props.value }}</span>
-        <q-badge
-          v-if="$Config.userId() === props.row.id"
-          class="bg-orange-1 q-ml-sm text-orange-9"
-          ><small>It's me</small></q-badge
+      <template #col-action="{ row }">
+        <n-dropdown 
+          trigger="click" 
+          :options="getRowActions(row)" 
+          @select="(key) => handleAction(key, row)"
         >
+          <n-button quaternary circle>
+            <template #icon>
+              <n-icon :component="EllipsisHorizontal" />
+            </template>
+          </n-button>
+        </n-dropdown>
       </template>
 
-      <template v-slot:col-log_data="props">
-        <lv-log-data :data="props.value" />
+      <template #col-name="{ row, value }">
+        <n-space align="center" :size="8">
+          <n-avatar 
+            round 
+            :size="32" 
+            :src="row.picture"
+            :fallback-src="''"
+          >
+            {{ $Helper.getFirstChar(row.username) }}
+          </n-avatar>
+          <n-text strong>{{ value }}</n-text>
+          <n-tag v-if="$Config.userId() === row.id" size="small" type="warning">
+            Eu
+          </n-tag>
+        </n-space>
+      </template>
+
+      <template #col-log_data="{ value }">
+        <lv-log-data :data="value" />
       </template>
     </lv-table>
 
-    <q-dialog
-      v-model="modal.show"
-      @hide="modal.show = false"
-      transition-show="jump-up"
-      transition-hide="jump-down"
+    <!-- Modal -->
+    <lv-modal
+      v-model:show="modal.show"
+      :title="modal.target === 'form' ? 'Usuário' : 'Detalhes'"
+      :width="600"
     >
       <Form
         v-if="modal.target === 'form'"
         :data="modal.data"
         :onSubmit="onSubmitForm"
+        @close="modal.show = false"
       />
-      <Detail v-if="modal.target === 'detail'" :data="modal.data" />
-    </q-dialog>
-  </div>
+      <Detail 
+        v-if="modal.target === 'detail'" 
+        :data="modal.data" 
+        @close="modal.show = false"
+      />
+    </lv-modal>
+  </lv-container>
 </template>
 
 <script>
@@ -106,8 +99,11 @@ import {
   watchEffect,
   onBeforeMount,
   defineComponent,
+  h,
 } from "vue";
 import { useRoute } from "vue-router";
+import { NDropdown, NButton, NIcon, NAvatar, NText, NTag, NSpace } from "naive-ui";
+import { EllipsisHorizontal, Eye, Pencil } from "@vicons/ionicons5";
 import useServices from "./../../composables/Services";
 import Meta from "./meta";
 import Form from "./form";
@@ -118,12 +114,19 @@ export default defineComponent({
   components: {
     Form,
     Detail,
+    NDropdown,
+    NButton,
+    NIcon,
+    NAvatar,
+    NText,
+    NTag,
+    NSpace,
   },
   emits: ["row-clicked"],
   props: {
     height: {
       type: String,
-      default: "84.5vh",
+      default: "calc(100vh - 200px)",
     },
     hideTitle: {
       type: Boolean,
@@ -138,17 +141,14 @@ export default defineComponent({
       default: false,
     },
     noShorthand: {
-      // disable search with F1 button
       type: Boolean,
       default: false,
     },
     setting: {
-      // disable column setting
       type: Boolean,
       default: true,
     },
     disableMeta: {
-      // disable setPageMeta
       type: Boolean,
       default: false,
     },
@@ -174,11 +174,11 @@ export default defineComponent({
       { name: "Tools", children: [{ name: "Export" }, { name: "Download" }] },
     ];
     let table = reactive({
-      ...Handler.table(Meta.columns, `${Meta.module}-columns`), // init default columns
+      ...Handler.table(Meta.columns, `${Meta.module}-columns`),
       action: true,
     });
 
-    /* LIFECYCLE : all processes that are executed in a certain lifecycle are defined here */
+    /* LIFECYCLE */
     onBeforeMount(() => {
       if (!Meta.permission.browse) Handler._403();
       else {
@@ -189,18 +189,39 @@ export default defineComponent({
     });
 
     watchEffect(() => {
-      // handle reactive for declared element
       handleControls();
     });
 
-    /* COMPUTED : all computed variables are defined here */
+    /* COMPUTED */
     const actionModal = computed(() => {
       return GlobalStore.getActionModal;
     });
 
-    /* METHODS : all methods are defined here */
+    /* METHODS */
+    function getRowActions(row) {
+      const actions = [];
+      if (Meta.permission.read) {
+        actions.push({
+          label: 'Visualizar',
+          key: 'detail',
+          icon: () => h(NIcon, { component: Eye }),
+        });
+      }
+      if (Meta.permission.update) {
+        actions.push({
+          label: 'Editar',
+          key: 'form',
+          icon: () => h(NIcon, { component: Pencil }),
+        });
+      }
+      return actions;
+    }
+
+    function handleAction(key, row) {
+      action(key, row);
+    }
+
     function onRefresh() {
-      console.log(refTable.value);
       if (refTable.value.onRefresh) refTable.value.onRefresh();
     }
 
@@ -237,7 +258,7 @@ export default defineComponent({
 
       if (!hold) deleteRestoreHandler();
       else {
-        Helper.showAlert("Opps!", "You cannot delete your self data!");
+        Helper.showAlert("Ops!", "Você não pode deletar seus próprios dados!");
       }
     }
 
@@ -249,9 +270,9 @@ export default defineComponent({
 
     function deleteRestoreHandler() {
       const totalData = selectedAction.data.length;
-      const type = selectedAction.isDelete ? "Delete" : "Restore";
-      const title = `${type} ${totalData} data selected`;
-      const message = `Are you sure want to ${title}?`;
+      const type = selectedAction.isDelete ? "Deletar" : "Restaurar";
+      const title = `${type} ${totalData} ${totalData > 1 ? 'itens selecionados' : 'item selecionado'}`;
+      const message = `Tem certeza que deseja ${title.toLowerCase()}?`;
       Helper.showAlert(title, message, false, type, deleteRestoreSelected);
     }
 
@@ -259,7 +280,7 @@ export default defineComponent({
       const mode = selectedAction.isDelete ? "delete" : "restore";
       Helper.loadingOverlay(
         true,
-        mode === "delete" ? "Deleting..." : "Restoring..."
+        mode === "delete" ? "Deletando..." : "Restaurando..."
       );
       const data = { id: [] };
       selectedAction.data.map((r) => {
@@ -273,7 +294,7 @@ export default defineComponent({
           Helper.loadingOverlay(false);
           if (status === 200) {
             Helper.showToast(
-              `${mode === "delete" ? "Delete" : "Restore"} Successfully`,
+              `${mode === "delete" ? "Deletado" : "Restaurado"} com sucesso`,
               5000,
               "top-right",
               message,
@@ -290,6 +311,7 @@ export default defineComponent({
     }
 
     function onSubmitForm(data) {
+      modal.show = false;
       onRefresh();
     }
 
@@ -299,8 +321,9 @@ export default defineComponent({
       controls,
       table,
       refTable,
-      // computed
-      // methods
+      EllipsisHorizontal,
+      getRowActions,
+      handleAction,
       action,
       onDeleted,
       onRestored,

@@ -226,6 +226,22 @@ class UsersController extends Controller
     }
 
     /**
+     * Get unread notification count for badge
+     */
+    public function notificationsUnreadCount() {
+        try {
+            $userId = $this->repository->userId();
+            if (!$userId) throw new Exception("You cannot perform this action, please login first!");
+            
+            $count = $this->UserNotificationsRepository->getUnreadCount($userId);
+            return H_apiResponse(['count' => $count]);
+
+        } catch (Exception $e){
+            return H_apiResError($e);
+        }
+    }
+
+    /**
      * For all notification in table view
      */
     public function notificationList() {

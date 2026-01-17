@@ -83,6 +83,22 @@ class UserNotificationsRepository
         }
     }
 
+    /**
+     * Get unread notification count for a user
+     * @param Int $userId
+     * @return Int
+     */
+    public function getUnreadCount ($userId) {
+        try {
+            $result = $this->getBaseQuery($userId, [DB::raw('count(nf.id) as total')], false)
+                ->where('un.is_read', false)
+                ->first();
+            return $result ? $result->total : 0;
+        } catch (Exception $e){
+            throw new Exception(H_throw($e, '['.H_getRepositoryName(get_class()).'::getUnreadCount] '));
+        }
+    }
+
     public function getDataByUser ($userId) {
         try {
             $payload = $this->request->all();

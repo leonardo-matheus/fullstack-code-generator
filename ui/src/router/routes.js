@@ -28,12 +28,27 @@ const customRoutes = [
       {
         name: "example",
         path: "/example",
+        component: () => import("pages/ComponentsShowcase.vue"),
+      },
+      {
+        name: "example-legacy",
+        path: "/example-legacy",
         component: () => import("pages/example.vue"),
       },
       {
         name: "generator",
         path: "/generator",
+        component: () => import("pages/GeneratorNew.vue"),
+      },
+      {
+        name: "generator-legacy",
+        path: "/generator-legacy",
         component: () => import("pages/generator.vue"),
+      },
+      {
+        name: "code-output",
+        path: "/code-output",
+        component: () => import("pages/CodeOutput.vue"),
       },
       {
         name: "settings",

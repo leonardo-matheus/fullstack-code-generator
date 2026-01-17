@@ -1,102 +1,94 @@
 <template>
-  <div
-    :class="`${fromModal ? '' : 'q-pb-xs'} fix-content-modal row root`"
-    style="min-width: 75vw"
-    v-if="Meta.permission.read"
-  >
+  <div class="user-detail" v-if="Meta.permission.read">
     <!-- Header -->
     <lv-header-page
-      class="bg-white"
-      split
+      v-if="!fromModal"
+      :title="Meta.name"
+      :subtitle="$Handler.keyLabelDisplay(dataModel, Meta.keyLabel)"
+      :breadcrumb="[
+        { label: 'Home', to: '/' },
+        { label: Meta.name, to: { name: Meta.module } },
+        { label: 'Detalhes' }
+      ]"
       showBack
       :backTo="{ name: Meta.module }"
-      :preventBackTo="fromModal ? true : false"
     >
-      <template v-slot:left>
-        <lv-breadcumb
-          v-if="!fromModal"
-          :title="Meta.name"
-          :subtitle="$Handler.keyLabelDisplay(dataModel, Meta.keyLabel)"
-        />
-      </template>
-
-      <template v-slot:right>
-        <lv-btn
-          v-if="!loading"
-          soft
-          label="Action"
-          icon="more_horiz"
-          color="indigo"
-          labelVisibility
+      <template #actions>
+        <n-dropdown
+          v-if="!loading && Meta.permission.update"
+          trigger="click"
+          :options="actionOptions"
+          @select="handleActionSelect"
         >
-          <lv-action-box label="Actions" width="120px">
-            <lv-action-item
-              v-if="Meta.permission.update"
-              label="Edit"
-              icon="edit"
-              color="green"
-              :to="action('form', dataModel, true)"
-              @click="action('form', dataModel)"
-            />
-          </lv-action-box>
-        </lv-btn>
-        <lv-open-link
-          v-if="fromModal"
-          :meta="Meta"
-          :data="dataModel"
-          page="detail"
-        />
+          <lv-btn icon="ellipsis-horizontal" label="Ações" />
+        </n-dropdown>
       </template>
     </lv-header-page>
 
     <!-- Content -->
     <lv-loading v-if="loading" />
-    <lv-container v-if="!loading" class="col-12" height="220px">
-      <lv-uploader
-        class="col-12 col-sm-4 col-md-3 text-center"
-        size="180px"
-        avatar
-        rouded
-        :placeholder="dataModel.picture"
-        display
-      />
-      <div class="col-12 col-sm-8 col-md-9 row">
-        <lv-view-item optimize-display label="name" :display="dataModel.name" />
-        <lv-view-item
-          optimize-display
-          label="username"
-          :display="dataModel.username"
-        />
-        <lv-view-item
-          optimize-display
-          label="email"
-          :display="dataModel.email"
-        />
-        <lv-view-item
-          optimize-display
-          label="Ban?"
-          :display="dataModel.is_ban"
-        />
-      </div>
-    </lv-container>
+    
+    <n-card v-if="!loading" :bordered="false">
+      <n-grid :cols="12" :x-gap="24" :y-gap="16" responsive="screen" item-responsive>
+        <!-- Avatar Column -->
+        <n-grid-item span="12 m:3">
+          <div class="avatar-container">
+            <n-avatar
+              round
+              :size="180"
+              :src="dataModel.picture"
+              :fallback-src="''"
+            >
+              <n-icon :size="80" :component="PersonOutline" />
+            </n-avatar>
+          </div>
+        </n-grid-item>
+        
+        <!-- Info Column -->
+        <n-grid-item span="12 m:9">
+          <n-descriptions label-placement="top" :column="2" bordered>
+            <n-descriptions-item label="Nome">
+              <n-text strong>{{ dataModel.name }}</n-text>
+            </n-descriptions-item>
+            <n-descriptions-item label="Username">
+              {{ dataModel.username }}
+            </n-descriptions-item>
+            <n-descriptions-item label="Email">
+              {{ dataModel.email }}
+            </n-descriptions-item>
+            <n-descriptions-item label="Status">
+              <n-tag :type="dataModel.is_ban ? 'error' : 'success'" size="small">
+                {{ dataModel.is_ban ? 'Banido' : 'Ativo' }}
+              </n-tag>
+            </n-descriptions-item>
+          </n-descriptions>
+        </n-grid-item>
+      </n-grid>
+    </n-card>
 
-    <q-dialog
-      v-model="modal.show"
-      @hide="modal.show = false"
-      transition-show="jump-up"
-      transition-hide="jump-down"
+    <!-- Edit Modal -->
+    <lv-modal
+      v-model:show="modal.show"
+      title="Editar Usuário"
+      :width="600"
     >
       <Form
         v-if="modal.target === 'form'"
         :data="modal.data"
-        :onSubmit="onRefresh"
+        :onSubmit="onFormSubmit"
+        @close="modal.show = false"
       />
-    </q-dialog>
+    </lv-modal>
   </div>
 </template>
 
 <script>
-import { ref, reactive, computed, onBeforeMount, defineComponent } from "vue";
+import { ref, reactive, computed, onBeforeMount, defineComponent, h } from "vue";
+import { 
+  NCard, NGrid, NGridItem, NAvatar, NDescriptions, NDescriptionsItem, 
+  NText, NTag, NIcon, NDropdown 
+} from "naive-ui";
+import { PersonOutline, Pencil } from "@vicons/ionicons5";
 import useServices from "./../../composables/Services";
 import { useRoute } from "vue-router";
 import Meta from "./meta";
@@ -106,19 +98,29 @@ export default defineComponent({
   name: Meta.moduleName + "Detail",
   components: {
     Form,
+    NCard,
+    NGrid,
+    NGridItem,
+    NAvatar,
+    NDescriptions,
+    NDescriptionsItem,
+    NText,
+    NTag,
+    NIcon,
+    NDropdown,
   },
+  emits: ['close'],
   props: {
     data: {
       type: Object,
       default: null,
     },
     disableMeta: {
-      // disable setPageMeta
       type: Boolean,
       default: false,
     },
   },
-  setup(props) {
+  setup(props, { emit }) {
     const { Config, Handler, Helper, Api, GlobalStore, SetMetaPage } =
       useServices();
     const route = useRoute();
@@ -130,19 +132,31 @@ export default defineComponent({
     const topMenu = [{ name: "Refresh", event: onRefresh }];
     const viewList = ref([]);
 
-    /* LIFECYCLE : all processes that are executed in a certain lifecycle are defined here */
+    const actionOptions = computed(() => {
+      const options = [];
+      if (Meta.permission.update) {
+        options.push({
+          label: 'Editar',
+          key: 'edit',
+          icon: () => h(NIcon, { component: Pencil }),
+        });
+      }
+      return options;
+    });
+
+    /* LIFECYCLE */
     onBeforeMount(() => {
       if (!Meta.permission.read) Handler._403();
       else {
         if (!fromModal.value) {
           Handler.topMenu(topMenu);
-          if (!props.disableMeta) SetMetaPage(`Detail ${Meta.name}`);
+          if (!props.disableMeta) SetMetaPage(`Detalhes ${Meta.name}`);
         }
         onRefresh();
       }
     });
 
-    /* COMPUTED : all computed variables are defined here */
+    /* COMPUTED */
     const actionModal = computed(() => {
       return GlobalStore.getActionModal;
     });
@@ -158,7 +172,13 @@ export default defineComponent({
       );
     });
 
-    /* METHODS : all methods are defined here */
+    /* METHODS */
+    function handleActionSelect(key) {
+      if (key === 'edit') {
+        action('form', dataModel.value);
+      }
+    }
+
     function onRefresh() {
       if (id.value) {
         getData();
@@ -189,20 +209,39 @@ export default defineComponent({
       }
     }
 
+    function onFormSubmit() {
+      modal.show = false;
+      onRefresh();
+    }
+
     return {
       Meta,
       loading,
       dataModel,
       viewList,
       modal,
-      // computed
+      actionOptions,
+      PersonOutline,
       fromModal,
       id,
-      // methods
       onRefresh,
       getData,
       action,
+      handleActionSelect,
+      onFormSubmit,
     };
   },
 });
 </script>
+
+<style scoped>
+.user-detail {
+  width: 100%;
+}
+
+.avatar-container {
+  display: flex;
+  justify-content: center;
+  padding: 16px;
+}
+</style>

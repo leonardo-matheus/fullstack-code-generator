@@ -9,6 +9,7 @@ export const useGlobalStore = defineStore({
     topMenuMode: false,
     miniMenuMode: false,
     actionModal: false,
+    darkMode: false,
     userInfo: {
       name: "Leonardo M. Silva",
       username: "Leonardo",
@@ -56,6 +57,11 @@ export const useGlobalStore = defineStore({
       if (state[tmpName]) Helper.saveLdb(tmpName, state[tmpName]);
       return Helper.getLdb(tmpName);
     },
+    getDarkMode: (state) => {
+      const tmpName = "darkMode";
+      if (!Helper.checkLdb(tmpName)) Helper.saveLdb(tmpName, false);
+      return Helper.getLdb(tmpName);
+    },
     getUserInfo: (state) => {
       const tmpName = "userInfo";
       if (!Helper.checkLdb(tmpName)) Helper.saveLdb(tmpName, false); // first init
@@ -88,6 +94,10 @@ export const useGlobalStore = defineStore({
     setActionModal(val = false) {
       this.actionModal = val;
       Helper.saveLdb("actionModal", val);
+    },
+    setDarkMode(val = false) {
+      this.darkMode = val;
+      Helper.saveLdb("darkMode", val);
     },
     setUserInfo(val) {
       if (!val) val = this.userInfo;
